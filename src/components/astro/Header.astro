@@ -1,0 +1,36 @@
+---
+import { getImage } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import { site } from '@/config/site';
+import { getActiveSocials, getContactChannels } from '@/lib/contact';
+import { SiteHeader } from '@/components/react/SiteHeader';
+import { ScrollProgress } from '@/components/react/ScrollProgress';
+
+interface Props {
+  rootPrefix?: boolean;
+}
+
+const { rootPrefix = false } = Astro.props;
+
+const optimizedLogo = await getImage({
+  src: logo,
+  width: 480,
+  format: 'webp',
+  quality: 94,
+});
+
+const channels = getContactChannels(site);
+const socials = getActiveSocials(site.social);
+---
+
+<ScrollProgress client:idle />
+<SiteHeader
+  client:load
+  logoSrc={optimizedLogo.src}
+  logoWidth={Number(optimizedLogo.attributes.width ?? 480)}
+  logoHeight={Number(optimizedLogo.attributes.height ?? 107)}
+  brandAlt={`${site.name} — ${site.tagline}`}
+  rootPrefix={rootPrefix}
+  whatsappUrl={channels.whatsappUrl}
+  socials={socials}
+/>

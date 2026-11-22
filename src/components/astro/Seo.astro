@@ -1,0 +1,110 @@
+---
+import { getImage } from 'astro:assets';
+import { site } from '@/config/site';
+import { getActiveSocials, getContactChannels } from '@/lib/contact';
+import logo from '@/assets/brand/logo.png';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Ruta relativa de la página (para canonical). */
+  path?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  path = Astro.url.pathname,
+  image = '/og-default.jpg',
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.tagline}`;
+const siteUrl = Astro.site ?? new URL('https://www.artmeltech.example');
+const canonical = new URL(path, siteUrl).href;
+const ogImage = new URL(image, siteUrl).href;
+const optimizedLogo = await getImage({ src: logo, width: 480, format: 'webp', quality: 94 });
+const logoUrl = new URL(optimizedLogo.src, siteUrl).href;
+
+// Datos estructurados: solo se incluyen campos realmente configurados.
+const socials = getActiveSocials(site.social).map((s) => s.url);
+const channels = getContactChannels(site);
+const contactPoint =
+  site.contact.email || site.contact.phone
+    ? [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'customer service',
+          availableLanguage: ['Spanish'],
+          ...(site.contact.email && channels.mailtoUrl ? { email: site.contact.email } : {}),
+          ...(site.contact.phone && channels.telUrl ? { telephone: site.contact.phone } : {}),
+        },
+      ]
+    : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl.origin}/#organization`,
+      name: site.name,
+      legalName: site.legalName,
+      slogan: site.tagline,
+      description: site.description,
+      url: siteUrl.origin,
+      logo: { '@type': 'ImageObject', url: logoUrl },
+      ...(site.contact.location
+        ? {
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Riberalta',
+              addressRegion: 'Beni',
+              addressCountry: 'BO',
+            },
+            areaServed: site.contact.location,
+          }
+        : {}),
+      ...(socials.length ? { sameAs: socials } : {}),
+      ...(contactPoint ? { contactPoint } : {}),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl.origin}/#website`,
+      url: siteUrl.origin,
+      name: site.name,
+      inLanguage: 'es',
+      publisher: { '@id': `${siteUrl.origin}/#organization` },
+    },
+  ],
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content={site.locale} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
+/>

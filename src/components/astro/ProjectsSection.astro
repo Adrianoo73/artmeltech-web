@@ -1,0 +1,86 @@
+---
+import { getImage } from 'astro:assets';
+import SectionHeading from '@/components/astro/SectionHeading.astro';
+import { ProjectsGallery, type SerializedProject } from '@/components/react/ProjectsGallery';
+import { projects, projectsIntro } from '@/content/projects';
+
+const widths = [480, 800, 1200] as const;
+
+const serializedProjects: SerializedProject[] = await Promise.all(
+  projects.map(async (project) => {
+    const [avifVersions, webpVersions] = await Promise.all([
+      Promise.all(
+        widths.map((w) =>
+          getImage({ src: project.image, width: w, format: 'avif', quality: 65 }),
+        ),
+      ),
+      Promise.all(
+        widths.map((w) =>
+          getImage({ src: project.image, width: w, format: 'webp', quality: 80 }),
+        ),
+      ),
+    ]);
+
+    const avifSrcSet = avifVersions.map((img, i) => `${img.src} ${widths[i]}w`).join(', ');
+    const webpSrcSet = webpVersions.map((img, i) => `${img.src} ${widths[i]}w`).join(', ');
+    const fallback = webpVersions[1] ?? webpVersions[0];
+
+    return {
+      id: project.id,
+      title: project.title,
+      category: project.category,
+      categoryLabel: project.categoryLabel,
+      summary: project.summary,
+      challenge: project.challenge,
+      solution: project.solution,
+      stack: project.stack,
+      imageAlt: project.imageAlt,
+      image: {
+        avifSrcSet,
+        webpSrcSet,
+        fallbackSrc: fallback?.src ?? '',
+        width: Number(fallback?.attributes.width ?? 800),
+        height: Number(fallback?.attributes.height ?? 450),
+      },
+    };
+  }),
+);
+---
+
+<section
+  id="proyectos"
+  aria-labelledby="proyectos-title"
+  class="section-y relative overflow-hidden bg-navy text-white"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="bg-tech-grid mask-radial-fade absolute inset-0 opacity-45"></div>
+    <div
+      class="absolute right-0 bottom-0 h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.2),transparent_68%)] blur-3xl"
+    >
+    </div>
+  </div>
+
+  <div class="container-site relative z-10">
+    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      <SectionHeading
+        id="proyectos-title"
+        eyebrow={projectsIntro.eyebrow}
+        title={projectsIntro.title}
+        highlight={projectsIntro.titleHighlight}
+        lead={projectsIntro.lead}
+        tone="dark"
+      />
+
+      <!-- Aviso visible de contenido demostrativo -->
+      <aside
+        aria-label="Aviso sobre proyectos demostrativos"
+        class="flex max-w-md items-start gap-3 rounded-2xl border border-accent/40 bg-white/[0.05] px-4 py-3 text-xs leading-relaxed text-white/85"
+      >
+        <span aria-hidden="true" class="mt-1.5 size-2 shrink-0 rounded-full bg-accent"></span>
+        <p>{projectsIntro.disclaimer}</p>
+      </aside>
+    </div>
+
+    <ProjectsGallery client:visible items={serializedProjects} />
+  </div>
+</section>

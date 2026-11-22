@@ -1,0 +1,79 @@
+---
+/**
+ * Encabezado de sección reutilizable.
+ * Usa el acento oficial `#EB2F33` en el trazo del eyebrow, subrayado fino y punto final,
+ * manteniendo siempre contraste WCAG 2.1 AA en fondos oscuros y claros.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  highlight?: string;
+  lead?: string;
+  tone?: 'dark' | 'light';
+  align?: 'left' | 'center';
+  id?: string;
+  class?: string;
+}
+
+const { eyebrow, title, highlight, lead, tone = 'light', align = 'left', id, class: className } = Astro.props;
+const isDark = tone === 'dark';
+
+// Separa el punto final para pintarlo en acento
+const highlightText = highlight?.replace(/\.$/, '');
+const hasDot = highlight?.endsWith('.') ?? false;
+---
+
+<header
+  class:list={[
+    'flex max-w-3xl flex-col gap-4 sm:gap-5',
+    align === 'center' && 'mx-auto items-center text-center',
+    className,
+  ]}
+>
+  <p data-reveal="fade" class:list={['eyebrow', isDark ? 'text-sky' : 'text-navy/80']}>
+    <span aria-hidden="true" class="relative flex items-center gap-1.5">
+      <span data-reveal="line" class="h-[2px] w-7 origin-left rounded-full bg-accent"></span>
+      <span class:list={['h-[2px] w-3 rounded-full', isDark ? 'bg-sky/75' : 'bg-sky']}></span>
+    </span>
+    {eyebrow}
+  </p>
+  <h2
+    id={id}
+    data-reveal
+    class:list={['text-h2 font-bold', isDark ? 'text-white' : 'text-navy']}
+  >
+    {title}{' '}
+    {
+      highlightText && (
+        <span class:list={['relative inline-block', isDark ? 'text-sky' : 'text-navy']}>
+          <span
+            aria-hidden="true"
+            data-reveal="line"
+            data-reveal-delay="0.14"
+            class:list={[
+              'absolute inset-x-0 bottom-[0.04em] h-[3px] origin-left rounded-full',
+              isDark
+                ? 'bg-gradient-to-r from-accent via-accent/80 to-sky/40'
+                : 'bg-gradient-to-r from-accent via-accent/85 to-sky/50',
+            ]}
+          />
+          <span class="relative">
+            {highlightText}
+            {hasDot && <span class="text-accent">.</span>}
+          </span>
+        </span>
+      )
+    }
+  </h2>
+  {
+    lead && (
+      <p
+        data-reveal
+        data-reveal-delay="0.08"
+        class:list={['text-lead max-w-2xl', isDark ? 'text-white/78' : 'text-ink-muted']}
+      >
+        {lead}
+      </p>
+    )
+  }
+</header>

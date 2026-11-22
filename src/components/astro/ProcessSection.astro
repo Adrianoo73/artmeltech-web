@@ -1,0 +1,25 @@
+---
+import SectionHeading from '@/components/astro/SectionHeading.astro';
+import { ProcessTimeline } from '@/components/react/ProcessTimeline';
+import { processIntro } from '@/content/process';
+---
+
+<section
+  id="proceso"
+  aria-labelledby="proceso-title"
+  class="section-y relative overflow-x-clip bg-white text-navy"
+>
+  <div class="container-site">
+    <SectionHeading
+      id="proceso-title"
+      eyebrow={processIntro.eyebrow}
+      title={processIntro.title}
+      highlight={processIntro.titleHighlight}
+      lead={processIntro.lead}
+      tone="light"
+      align="center"
+    />
+
+    <ProcessTimeline client:visible />
+  </div>
+</section>

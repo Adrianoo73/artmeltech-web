@@ -1,0 +1,146 @@
+---
+import SectionHeading from '@/components/astro/SectionHeading.astro';
+import { Icon } from '@/components/ui/icons';
+import { serviceGroups, services, servicesIntro } from '@/content/services';
+
+const indexedServices = services.map((service, idx) => ({
+  ...service,
+  number: String(idx + 1).padStart(2, '0'),
+}));
+
+const groupedServices = serviceGroups.map((group) => ({
+  ...group,
+  items: indexedServices.filter((item) => item.category === group.id),
+}));
+---
+
+<section
+  id="servicios"
+  aria-labelledby="servicios-title"
+  class="section-y relative overflow-hidden bg-navy text-white"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="bg-tech-grid mask-radial-fade absolute inset-0 opacity-55"></div>
+    <div
+      data-parallax="36"
+      class="absolute -top-36 left-1/2 h-[28rem] w-[48rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.2)_0%,rgb(99_156_197/0.06)_42%,transparent_72%)]"
+    >
+    </div>
+    <div
+      class="beam-x absolute top-[48%] left-0 h-[1.5px] w-44 bg-gradient-to-r from-transparent via-sky/50 to-accent/80"
+      style="--beam-dur: 10s; --beam-delay: 1.2s"
+    >
+    </div>
+  </div>
+
+  <div class="container-site relative z-10">
+    <div class="flex flex-col justify-between gap-6 sm:gap-8 lg:flex-row lg:items-end">
+      <SectionHeading
+        id="servicios-title"
+        eyebrow={servicesIntro.eyebrow}
+        title={servicesIntro.title}
+        highlight={servicesIntro.titleHighlight}
+        lead={servicesIntro.lead}
+        tone="dark"
+      />
+      <a
+        data-reveal="fade"
+        data-magnetic="4"
+        href="#contacto"
+        class="group inline-flex min-h-12 w-full shrink-0 items-center justify-between gap-2.5 self-start rounded-full border border-white/20 bg-white/[0.06] py-2 pr-2 pl-5 font-display text-sm font-semibold text-white transition-[background-color,border-color,transform] duration-300 hover:border-accent/80 hover:bg-white/[0.1] sm:w-auto sm:justify-center lg:self-end"
+      >
+        <span>Consultar por un servicio</span>
+        <span
+          aria-hidden="true"
+          class="grid size-8 place-items-center rounded-full bg-accent text-white transition-transform duration-300 ease-out-expo group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        >
+          <Icon name="arrow-up-right" className="size-4" strokeWidth={2.4} />
+        </span>
+      </a>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-12 sm:mt-12 sm:gap-14 lg:mt-16 lg:gap-16">
+      {
+        groupedServices.map((group) => (
+          <div>
+            <div
+              data-reveal="fade"
+              class="flex flex-col gap-3 border-b border-sky/20 pb-4 md:flex-row md:items-center md:justify-between md:gap-4"
+            >
+              <h3 class="flex items-center gap-2.5 font-display text-sm font-bold tracking-[0.14em] text-white uppercase sm:text-base">
+                <span
+                  aria-hidden="true"
+                  class="h-[2.5px] w-6 shrink-0 rounded-full bg-gradient-to-r from-accent to-sky"
+                />
+                <span>{group.label}</span>
+              </h3>
+              <span class="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-sky/30 bg-white/[0.04] px-3.5 py-1 font-display text-[0.7rem] font-semibold tracking-[0.12em] whitespace-nowrap text-sky uppercase">
+                <span aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-accent" />
+                {group.badge}
+              </span>
+            </div>
+
+            <ul
+              data-reveal-group
+              class="mt-6 grid gap-4 sm:mt-7 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
+            >
+              {group.items.map((service, localIdx) => {
+                const isLastOdd =
+                  group.items.length % 2 === 1 && localIdx === group.items.length - 1;
+                return (
+                  <li
+                    data-reveal="card"
+                    class:list={[
+                      'spotlight group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-card)] border border-sky/20 bg-navy-900/75 p-5 shadow-card transition-[border-color,transform,box-shadow] duration-300 ease-out-quart hover:-translate-y-2 hover:border-accent/65 hover:shadow-glow sm:p-7',
+                      isLastOdd && 'sm:col-span-2 lg:col-span-1',
+                    ]}
+                  >
+                    {/* Línea superior de acento #EB2F33 que se despliega en hover */}
+                    <div
+                      aria-hidden="true"
+                      class="pointer-events-none absolute inset-x-5 top-0 h-[2.5px] origin-left scale-x-40 bg-gradient-to-r from-accent via-sky to-transparent transition-transform duration-500 ease-out-expo group-hover:scale-x-100"
+                    />
+
+                    <div>
+                      <div class="flex items-start justify-between gap-4">
+                        <span class="relative grid size-11 place-items-center rounded-2xl border border-sky/25 bg-sky/12 text-sky transition-[background-color,color,border-color,transform] duration-300 ease-out-expo group-hover:scale-110 group-hover:-rotate-6 group-hover:border-accent group-hover:bg-accent group-hover:text-white sm:size-12">
+                          <Icon name={service.icon} className="size-5" />
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 font-display text-xs font-bold tracking-[0.18em] text-sky">
+                          <span aria-hidden="true" class="size-1.5 rounded-full bg-accent" />
+                          {service.number}
+                        </span>
+                      </div>
+
+                      <h4 class="text-h3 mt-5 font-bold text-white sm:mt-6">{service.title}</h4>
+                      <p class="mt-2.5 text-sm leading-relaxed text-white/78 sm:mt-3 sm:text-[0.9375rem]">
+                        {service.description}
+                      </p>
+                    </div>
+
+                    <div class="mt-6 border-t border-white/10 pt-4 sm:mt-7 sm:pt-5">
+                      <ul class="flex flex-wrap gap-2">
+                        {service.features.map((feat, fIdx) => (
+                          <li class="inline-flex items-center gap-1.5 rounded-full border border-white/14 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85">
+                            <span
+                              aria-hidden="true"
+                              class:list={[
+                                'size-1.5 rounded-full',
+                                fIdx === 0 ? 'bg-accent' : 'bg-sky',
+                              ]}
+                            />
+                            {feat}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

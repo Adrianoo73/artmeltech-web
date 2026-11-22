@@ -1,0 +1,45 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import { site } from '@/config/site';
+
+interface Props {
+  /** 'plate' envuelve el logo original en una superficie blanca (uso obligatorio sobre fondos oscuros). */
+  surface?: 'plate' | 'plain';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const { surface = 'plate', size = 'md', loading = 'lazy', class: className } = Astro.props;
+
+const heightClasses = {
+  sm: 'h-8 w-auto',
+  md: 'h-10 sm:h-11 w-auto',
+  lg: 'h-11 sm:h-14 w-auto',
+  xl: 'h-12 sm:h-16 w-auto',
+};
+---
+
+<span
+  class:list={[
+    'inline-flex shrink-0 items-center transition-transform duration-300 ease-out-expo',
+    surface === 'plate' &&
+      'rounded-2xl bg-white px-4 py-2.5 shadow-[0_12px_30px_-14px_rgb(0_0_0/0.55)] ring-1 ring-white/50',
+    className,
+  ]}
+>
+  <Image
+    src={logo}
+    alt={`${site.name} — ${site.tagline}`}
+    width={440}
+    height={98}
+    widths={[220, 340, 480]}
+    sizes="(max-width: 640px) 200px, 280px"
+    format="webp"
+    quality={94}
+    loading={loading}
+    decoding={loading === 'eager' ? 'sync' : 'async'}
+    class={heightClasses[size]}
+  />
+</span>

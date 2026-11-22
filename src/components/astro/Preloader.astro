@@ -1,0 +1,139 @@
+---
+import { getImage } from 'astro:assets';
+import logo from '@/assets/brand/logo.png';
+import { site } from '@/config/site';
+
+const optimizedLogo = await getImage({
+  src: logo,
+  width: 480,
+  format: 'webp',
+  quality: 94,
+});
+---
+
+<!--
+  Pantalla de carga inicial con el logotipo oficial de ArtMel Tech.
+  - Se muestra únicamente cuando JavaScript está activo (`html.js`) y el usuario
+    no solicitó movimiento reducido (`prefers-reduced-motion: no-preference`).
+  - Al finalizar la carga se retira con transición suave y se elimina del DOM.
+-->
+<div
+  id="site-preloader"
+  role="status"
+  aria-live="polite"
+  aria-label={`Cargando ${site.name}`}
+  class="preloader-root fixed inset-0 z-[100] flex h-dvh w-full flex-col items-center justify-center overflow-hidden bg-white px-6 text-navy"
+>
+  <!-- Fondo sutil: cuadrícula técnica clara + resplandor suave -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="bg-tech-grid-light absolute inset-0 opacity-75"></div>
+    <div
+      class="absolute top-1/2 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.15)_0%,rgb(99_156_197/0.04)_42%,transparent_70%)] sm:h-[42rem] sm:w-[42rem]"
+    >
+    </div>
+
+    <!-- Trazos geométricos de circuito en esquinas -->
+    <svg
+      viewBox="0 0 240 120"
+      fill="none"
+      class="preloader-circuit absolute top-6 left-4 h-16 w-32 opacity-75 sm:top-10 sm:left-10 sm:h-24 sm:w-48"
+    >
+      <path
+        d="M8 100 L8 42 L44 8 L170 8"
+        stroke="#639CC5"
+        stroke-opacity="0.45"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        pathLength="1"
+      />
+      <circle cx="170" cy="8" r="4" fill="#EB2F33" />
+      <circle cx="8" cy="100" r="3.5" fill="#03203D" />
+    </svg>
+
+    <svg
+      viewBox="0 0 240 120"
+      fill="none"
+      class="preloader-circuit absolute right-4 bottom-6 h-16 w-32 opacity-75 sm:right-10 sm:bottom-10 sm:h-24 sm:w-48"
+    >
+      <path
+        d="M232 20 L232 78 L196 112 L70 112"
+        stroke="#639CC5"
+        stroke-opacity="0.45"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        pathLength="1"
+      />
+      <circle cx="70" cy="112" r="4" fill="#EB2F33" />
+      <circle cx="232" cy="20" r="3.5" fill="#03203D" />
+    </svg>
+  </div>
+
+  <!-- Contenedor central animado -->
+  <div data-preloader-content class="relative z-10 flex w-full max-w-sm flex-col items-center">
+    <!-- Marco sutil de esquinas tecnológicas alrededor del logotipo -->
+    <div class="preloader-logo-wrap relative px-6 py-5 sm:px-9 sm:py-7">
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute top-0 left-0 h-4 w-4 rounded-tl-lg border-t-2 border-l-2 border-accent"
+      ></span>
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute top-0 right-0 h-4 w-4 rounded-tr-lg border-t-2 border-r-2 border-sky/70"
+      ></span>
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute bottom-0 left-0 h-4 w-4 rounded-bl-lg border-b-2 border-l-2 border-sky/70"
+      ></span>
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute right-0 bottom-0 h-4 w-4 rounded-br-lg border-r-2 border-b-2 border-accent"
+      ></span>
+
+      <!-- Logotipo oficial íntegro, sin alterar colores ni proporciones -->
+      <div class="relative overflow-hidden">
+        <img
+          src={optimizedLogo.src}
+          width={Number(optimizedLogo.attributes.width ?? 480)}
+          height={Number(optimizedLogo.attributes.height ?? 107)}
+          alt={`${site.name} — ${site.tagline}`}
+          loading="eager"
+          decoding="sync"
+          fetchpriority="high"
+          class="preloader-logo h-auto w-[225px] max-w-[74vw] select-none sm:w-[310px]"
+        />
+        <!-- Destello suave que cruza el logotipo -->
+        <span aria-hidden="true" class="preloader-sheen pointer-events-none absolute inset-y-0 -left-1/2 w-1/2"></span>
+      </div>
+    </div>
+
+    <!-- Barra de progreso de carga -->
+    <div
+      aria-hidden="true"
+      class="relative mt-7 h-[3.5px] w-52 overflow-hidden rounded-full bg-navy/10 sm:mt-8 sm:w-64"
+    >
+      <div
+        data-preloader-bar
+        class="preloader-bar h-full w-full origin-left rounded-full bg-gradient-to-r from-navy via-sky to-accent"
+      >
+      </div>
+    </div>
+
+    <!-- Indicador discreto inferior -->
+    <p class="preloader-caption mt-4 inline-flex items-center gap-2 font-display text-[0.6875rem] font-semibold tracking-[0.24em] text-navy/75 uppercase">
+      <span aria-hidden="true" class="relative flex size-2">
+        <span class="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-accent"></span>
+        <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+      </span>
+      <span>Conectando soluciones</span>
+    </p>
+  </div>
+
+  <!-- Borde inferior de acento #EB2F33 que barre al elevarse el telón -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-navy via-accent to-sky"
+  >
+  </div>
+</div>

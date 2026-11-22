@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import HeroSection from '@/components/astro/HeroSection.astro';
+import AboutSection from '@/components/astro/AboutSection.astro';
+import ServicesSection from '@/components/astro/ServicesSection.astro';
+import SolutionsSection from '@/components/astro/SolutionsSection.astro';
+import ProjectsSection from '@/components/astro/ProjectsSection.astro';
+import ProcessSection from '@/components/astro/ProcessSection.astro';
+import ContactSection from '@/components/astro/ContactSection.astro';
+import Footer from '@/components/astro/Footer.astro';
+---
+
+<BaseLayout path="/">
+  <Header slot="header" />
+
+  <HeroSection />
+  <AboutSection />
+  <ServicesSection />
+  <SolutionsSection />
+  <ProjectsSection />
+  <ProcessSection />
+  <ContactSection />
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+import { Icon } from '@/components/ui/icons';
+import { buttonClasses, buttonIconClasses } from '@/components/ui/button';
+---
+
+<BaseLayout
+  title="Página no encontrada"
+  description="La ruta solicitada no está disponible. Regresa al inicio de ArtMel Tech."
+  path="/404"
+  noindex
+  showPreloader={false}
+>
+  <Header slot="header" rootPrefix />
+
+  <section
+    aria-labelledby="not-found-title"
+    class="bg-tech-grid relative flex min-h-[75dvh] items-center justify-center overflow-hidden bg-navy pt-32 pb-20 text-white"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.26),transparent_65%)] blur-3xl"
+    >
+    </div>
+
+    <div class="container-site relative z-10 flex max-w-2xl flex-col items-center text-center">
+      <p class="eyebrow text-sky">
+        <span aria-hidden="true" class="size-2 rounded-full bg-accent"></span>
+        Error 404
+      </p>
+      <h1 id="not-found-title" class="text-display mt-5 font-bold">
+        Ruta no <span class="text-sky">encontrada<span class="text-accent">.</span></span>
+      </h1>
+      <p class="text-lead mt-5 text-white/75">
+        La página que buscas fue movida o no existe. Puedes volver al inicio para explorar nuestras
+        soluciones tecnológicas.
+      </p>
+      <div class="mt-9 flex flex-wrap justify-center gap-4">
+        <a href="/" class={buttonClasses('solid', 'onDark', 'lg')}>
+          <span>Volver al inicio</span>
+          <span aria-hidden="true" class={buttonIconClasses('onDark')}>
+            <Icon name="arrow-right" className="size-4" strokeWidth={2.2} />
+          </span>
+        </a>
+        <a href="/#contacto" class={buttonClasses('outline', 'onDark', 'lg')}>
+          <span>Ir a contacto</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" rootPrefix />
+</BaseLayout>

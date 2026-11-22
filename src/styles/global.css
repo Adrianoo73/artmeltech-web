@@ -1,0 +1,523 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   ARTMEL TECH — DESIGN TOKENS
+   Paleta oficial: #03203D · #639CC5 · #FFFFFF · #EB2F33
+   Todos los tonos derivados se obtienen exclusivamente mezclando los colores
+   oficiales entre sí o con transparencia (color-mix). No hay matices nuevos.
+   ========================================================================== */
+
+@theme {
+  /* Elimina la paleta por defecto de Tailwind: solo existen colores de marca */
+  --color-*: initial;
+
+  /* ---- Colores oficiales ---- */
+  --color-navy: #03203d;
+  --color-sky: #639cc5;
+  --color-white: #ffffff;
+  --color-accent: #eb2f33;
+
+  /* ---- Derivados tonales (mezclas de oficiales) ---- */
+  --color-navy-950: color-mix(in oklab, var(--color-navy) 82%, black);
+  --color-navy-900: color-mix(in oklab, var(--color-navy) 92%, black);
+  --color-navy-800: color-mix(in oklab, var(--color-navy) 90%, var(--color-sky));
+  --color-navy-700: color-mix(in oklab, var(--color-navy) 78%, var(--color-sky));
+  --color-sky-200: color-mix(in oklab, var(--color-sky) 40%, var(--color-white));
+  --color-sky-100: color-mix(in oklab, var(--color-sky) 16%, var(--color-white));
+  --color-surface: color-mix(in oklab, var(--color-sky) 7%, var(--color-white));
+  --color-ink: var(--color-navy);
+  --color-ink-muted: color-mix(in oklab, var(--color-navy) 74%, var(--color-white));
+  --color-mist: color-mix(in oklab, var(--color-white) 72%, var(--color-navy));
+
+
+
+  /* ---- Tipografía ---- */
+  --font-display: 'Montserrat Variable', 'Montserrat Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.15rem, 1.35rem + 4.1vw, 5.1rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.035em;
+  --text-h2: clamp(1.75rem, 1.3rem + 2.3vw, 3.35rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.03em;
+  --text-h3: clamp(1.1875rem, 1.06rem + 0.5vw, 1.45rem);
+  --text-h3--line-height: 1.25;
+  --text-lead: clamp(1rem, 0.94rem + 0.35vw, 1.2rem);
+  --text-lead--line-height: 1.62;
+
+  /* ---- Espaciado de secciones (optimizado Mobile First) ---- */
+  --spacing-section: clamp(3.75rem, 2.75rem + 5vw, 8.25rem);
+  --spacing-gutter: clamp(1rem, 0.7rem + 1.8vw, 2.5rem);
+  --container-site: 80rem;
+
+  /* ---- Radios y sombras ---- */
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 0 0 color-mix(in oklab, var(--color-white) 6%, transparent) inset,
+    0 24px 48px -24px color-mix(in oklab, var(--color-navy-950) 70%, transparent);
+  --shadow-soft: 0 18px 50px -20px color-mix(in oklab, var(--color-navy) 35%, transparent);
+  --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--color-sky) 35%, transparent),
+    0 20px 60px -20px color-mix(in oklab, var(--color-sky) 45%, transparent);
+
+  /* ---- Motion (sincronizado con src/lib/motion/tokens.ts) ---- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 160ms;
+  --duration-base: 320ms;
+  --duration-slow: 640ms;
+
+  --animate-drift: drift 22s var(--ease-in-out-soft) infinite alternate;
+  --animate-drift-slow: drift 34s var(--ease-in-out-soft) infinite alternate-reverse;
+  --animate-pulse-dot: pulse-dot 2.4s var(--ease-in-out-soft) infinite;
+
+  @keyframes drift {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(4%, -3%, 0) scale(1.06); }
+    100% { transform: translate3d(-3%, 4%, 0) scale(0.98); }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.6); opacity: 0.35; }
+  }
+}
+
+/* Fallbacks con métricas ajustadas para minimizar CLS mientras carga la fuente */
+@font-face {
+  font-family: 'Montserrat Fallback';
+  src: local('Arial');
+  size-adjust: 112%;
+  ascent-override: 85%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: light;
+    --header-h: 4.75rem;
+    accent-color: var(--color-accent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1.5rem);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-sky) 40%, transparent);
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   COMPONENTES / UTILIDADES
+   ========================================================================== */
+@utility container-site {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+/* Fondo navy con textura de cuadrícula tecnológica */
+@utility bg-tech-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--color-sky) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-sky) 9%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility mask-radial-fade {
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
+}
+
+@utility glass-dark {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--color-sky) 12%, transparent),
+    color-mix(in oklab, var(--color-navy) 40%, transparent)
+  );
+  border: 1px solid color-mix(in oklab, var(--color-sky) 20%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Etiqueta superior de sección */
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Reveal on scroll (progressive enhancement)
+   Sin JS → todo visible. Con JS → html.js activa el estado inicial.
+   La animación se dispara desde src/lib/motion/reveal.ts (motion: inView).
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  html.js [data-reveal='fade']:not([data-revealed]) {
+    transform: none;
+  }
+  html.js [data-reveal='scale']:not([data-revealed]) {
+    transform: scale(0.95);
+  }
+  html.js [data-reveal='card']:not([data-revealed]) {
+    transform: translate3d(0, 34px, 0) scale(0.96);
+  }
+  html.js [data-reveal='left']:not([data-revealed]) {
+    transform: translate3d(-28px, 0, 0);
+  }
+  html.js [data-reveal='right']:not([data-revealed]) {
+    transform: translate3d(28px, 0, 0);
+  }
+  html.js [data-reveal='line']:not([data-revealed]) {
+    opacity: 0.2;
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+  html.js [data-reveal='draw']:not([data-revealed]) {
+    opacity: 0.2;
+    transform: none;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Animaciones llamativas de precisión tecnológica (GPU-only)
+   -------------------------------------------------------------------------- */
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes btn-sheen {
+  0%, 72% {
+    transform: translate3d(-140%, 0, 0) skewX(-24deg);
+    opacity: 0;
+  }
+  82% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(340%, 0, 0) skewX(-24deg);
+    opacity: 0;
+  }
+}
+
+@keyframes grid-beam-x {
+  0% {
+    transform: translate3d(-25%, 0, 0);
+    opacity: 0;
+  }
+  15%, 80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(125%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes grid-beam-y {
+  0% {
+    transform: translate3d(0, -25%, 0);
+    opacity: 0;
+  }
+  15%, 80% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(0, 125%, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scroll-wheel {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(0, 8px, 0);
+    opacity: 0.2;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 28s linear infinite;
+    will-change: transform;
+  }
+  .marquee-wrap:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .btn-shimmer {
+    overflow: hidden;
+  }
+  .btn-shimmer::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 34%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-sky) 28%, transparent),
+      color-mix(in oklab, var(--color-white) 55%, transparent),
+      transparent
+    );
+    pointer-events: none;
+    animation: btn-sheen 5.2s var(--ease-in-out-soft) infinite;
+  }
+
+  .beam-x {
+    animation: grid-beam-x var(--beam-dur, 7s) var(--ease-in-out-soft) var(--beam-delay, 0s) infinite;
+  }
+  .beam-y {
+    animation: grid-beam-y var(--beam-dur, 8.5s) var(--ease-in-out-soft) var(--beam-delay, 1.5s) infinite;
+  }
+  .orbit-slow {
+    animation: orbit-spin 22s linear infinite;
+  }
+  .scroll-wheel-dot {
+    animation: scroll-wheel 1.8s var(--ease-in-out-soft) infinite;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero entrance (CSS puro → no depende de la hidratación, protege el LCP)
+   -------------------------------------------------------------------------- */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 0.6em, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-fade {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes draw-line {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word {
+    display: inline-block;
+    animation: hero-rise 0.56s var(--ease-out-expo) both;
+    animation-delay: calc(40ms + var(--i, 0) * 45ms);
+  }
+  .hero-fade {
+    animation: hero-fade 0.55s var(--ease-out-expo) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .hero-underline path {
+    stroke-dasharray: 1;
+    animation: draw-line 0.75s var(--ease-out-expo) both;
+    animation-delay: 420ms;
+  }
+}
+
+/* Spotlight que sigue al cursor en tarjetas (las variables las fija un script mínimo) */
+.spotlight {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    color-mix(in oklab, var(--color-sky) 18%, transparent),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out-quart);
+  z-index: -1;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .spotlight:hover::before { opacity: 1; }
+}
+
+/* Fondo claro con cuadrícula tecnológica sutil (usado en la pantalla de carga) */
+@utility bg-tech-grid-light {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--color-sky) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-sky) 12%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Barra de desplazamiento horizontal oculta (carrusel móvil) */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* --------------------------------------------------------------------------
+   Pantalla de carga inicial (Preloader con logotipo oficial)
+   - Sin JS (`html:not(.js)`): completamente oculta → el contenido es visible.
+   - Con movimiento reducido: completamente oculta → accesibilidad total.
+   -------------------------------------------------------------------------- */
+html:not(.js) #site-preloader {
+  display: none !important;
+}
+
+html.preloader-lock,
+html.preloader-lock body {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #site-preloader {
+    display: none !important;
+  }
+}
+
+@keyframes preloader-logo-in {
+  0% {
+    opacity: 0.25;
+    transform: translate3d(0, 10px, 0) scale(0.93);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes preloader-sheen {
+  0% {
+    transform: translate3d(-120%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(360%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+}
+
+@keyframes preloader-progress {
+  0% {
+    transform: scaleX(0.06);
+  }
+  55% {
+    transform: scaleX(0.76);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .preloader-logo-wrap {
+    animation: preloader-logo-in 0.58s var(--ease-out-expo) both;
+  }
+
+  .preloader-sheen {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-white) 78%, transparent),
+      transparent
+    );
+    animation: preloader-sheen 0.95s var(--ease-in-out-soft) 0.25s both;
+  }
+
+  .preloader-bar {
+    animation: preloader-progress 1.05s var(--ease-out-expo) both;
+  }
+
+  .preloader-caption {
+    animation: hero-fade 0.55s var(--ease-out-expo) 0.16s both;
+  }
+
+  .preloader-circuit path {
+    stroke-dasharray: 1;
+    animation: draw-line 0.9s var(--ease-out-expo) 0.08s both;
+  }
+}

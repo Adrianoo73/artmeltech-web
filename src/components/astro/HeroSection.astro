@@ -1,0 +1,246 @@
+---
+import { getImage } from 'astro:assets';
+import isotipo from '@/assets/brand/isotipo.png';
+import { hero } from '@/content/home';
+import { Icon } from '@/components/ui/icons';
+import { buttonClasses, buttonIconClasses } from '@/components/ui/button';
+import { HeroVisual } from '@/components/react/HeroVisual';
+
+const optimizedIsotipo = await getImage({
+  src: isotipo,
+  width: 180,
+  format: 'webp',
+  quality: 94,
+});
+
+const allWords = [
+  ...hero.titleLead.map((word) => ({ word, highlight: false })),
+  ...hero.titleHighlight.map((word) => ({ word, highlight: true })),
+];
+---
+
+<section
+  id="inicio"
+  aria-labelledby="hero-title"
+  class="relative flex min-h-[100svh] flex-col justify-between overflow-hidden bg-navy pt-24 pb-8 text-white sm:pt-32 sm:pb-10 lg:pt-36"
+>
+  <!-- Fondo multicapa: cuadrícula tecnológica + gradientes + haces luminosos viajando en GPU -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="bg-tech-grid mask-radial-fade absolute inset-0 opacity-85"></div>
+    <!-- Haces de luz sutiles recorriendo líneas de la cuadrícula -->
+    <div
+      class="beam-x absolute top-[24%] left-0 h-[1.5px] w-48 bg-gradient-to-r from-transparent via-sky/70 to-accent/90"
+      style="--beam-dur: 7.5s; --beam-delay: 0.4s"
+    >
+    </div>
+    <div
+      class="beam-x absolute top-[68%] left-0 h-[1.5px] w-40 bg-gradient-to-r from-transparent via-sky/60 to-white/80"
+      style="--beam-dur: 9.2s; --beam-delay: 3.1s"
+    >
+    </div>
+    <div
+      class="beam-y absolute top-0 left-[18%] hidden h-40 w-[1.5px] bg-gradient-to-b from-transparent via-sky/55 to-accent/85 md:block"
+      style="--beam-dur: 8.6s; --beam-delay: 1.8s"
+    >
+    </div>
+    <div
+      class="beam-y absolute top-0 right-[22%] hidden h-44 w-[1.5px] bg-gradient-to-b from-transparent via-sky/50 to-white/75 md:block"
+      style="--beam-dur: 10.2s; --beam-delay: 4.5s"
+    >
+    </div>
+    <div
+      class="animate-drift absolute -top-32 -right-24 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.24)_0%,rgb(99_156_197/0.08)_38%,transparent_70%)]"
+    >
+    </div>
+    <div
+      class="animate-drift-slow absolute -bottom-44 -left-32 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgb(99_156_197/0.16)_0%,rgb(99_156_197/0.05)_40%,transparent_70%)]"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-navy-950/65 to-transparent"
+    >
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="container-site relative z-10 my-auto py-5 sm:py-8 lg:py-12">
+    <div class="grid items-center gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-10">
+      <!-- Columna de texto (SSR puro → LCP rápido y visible incluso sin JS) -->
+      <div class="flex flex-col items-start lg:col-span-7">
+        <p class="eyebrow hero-fade text-sky" style="--d: 40ms">
+          <span aria-hidden="true" class="relative flex items-center gap-2">
+            <span class="h-[2px] w-8 rounded-full bg-accent"></span>
+            <span class="relative flex size-2">
+              <span class="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-accent"></span>
+              <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+            </span>
+          </span>
+          {hero.eyebrow}
+        </p>
+
+        <h1
+          id="hero-title"
+          class="text-display mt-5 max-w-[16ch] font-bold text-white sm:mt-6"
+        >
+          {
+            allWords.map(({ word, highlight }, idx) => {
+              const isLast = idx === allWords.length - 1;
+              return (
+                <>
+                  <span class="inline-block overflow-hidden pb-[0.06em] align-bottom">
+                    <span
+                      class:list={[
+                        'hero-word',
+                        highlight && (isLast ? 'text-white' : 'text-sky'),
+                      ]}
+                      style={`--i: ${idx}`}
+                    >
+                      {word}
+                      {isLast && <span class="text-accent">.</span>}
+                    </span>
+                  </span>
+                  {!isLast && ' '}
+                </>
+              );
+            })
+          }
+        </h1>
+
+        <!-- Trazo dinámico con el toque oficial #EB2F33 -->
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 240 12"
+          fill="none"
+          class="hero-underline mt-2.5 h-3 w-44 sm:mt-3 sm:w-56"
+        >
+          <defs>
+            <linearGradient id="hero-ul-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#EB2F33" />
+              <stop offset="65%" stop-color="#EB2F33" />
+              <stop offset="100%" stop-color="#639CC5" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M2 8.5C64 2.5 156 2.5 238 7.5"
+            stroke="url(#hero-ul-grad)"
+            stroke-width="3"
+            stroke-linecap="round"
+            pathLength="1"
+          />
+        </svg>
+
+        <p
+          class="text-lead hero-fade mt-5 max-w-xl text-white/82 sm:mt-6"
+          style="--d: 220ms"
+        >
+          {hero.subtitle}
+        </p>
+
+        <!-- Botones simétricos y cómodos al pulgar en móvil + brillo sutil y atracción magnética en escritorio -->
+        <div
+          class="hero-fade mt-7 flex w-full flex-col gap-3 sm:mt-9 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
+          style="--d: 310ms"
+        >
+          <a
+            href={hero.primaryCta.href}
+            data-magnetic="5"
+            class={buttonClasses(
+              'solid',
+              'onDark',
+              'lg',
+              'btn-shimmer w-full justify-between sm:w-auto sm:justify-center',
+            )}
+          >
+            <span>{hero.primaryCta.label}</span>
+            <span aria-hidden="true" class={buttonIconClasses('onDark')}>
+              <Icon name="arrow-right" className="size-4" strokeWidth={2.4} />
+            </span>
+          </a>
+
+          <a
+            href={hero.secondaryCta.href}
+            data-magnetic="4"
+            class={buttonClasses('outline', 'onDark', 'lg', 'w-full justify-center sm:w-auto')}
+          >
+            <span>{hero.secondaryCta.label}</span>
+            <Icon
+              name="arrow-up-right"
+              className="size-4 text-accent transition-transform duration-300 ease-out-expo group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+              strokeWidth={2.2}
+            />
+          </a>
+        </div>
+      </div>
+
+      <!-- Composición visual interactiva con isotipo oficial -->
+      <div class="lg:col-span-5">
+        <HeroVisual
+          client:load
+          isotipoSrc={optimizedIsotipo.src}
+          isotipoWidth={Number(optimizedIsotipo.attributes.width ?? 180)}
+          isotipoHeight={Number(optimizedIsotipo.attributes.height ?? 118)}
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Banda inferior con cinta animada de capacidades + señal de scroll -->
+  <div class="container-site relative z-10 mt-6 sm:mt-8">
+    <div
+      class="hero-fade flex items-center justify-between gap-6 border-t border-white/12 pt-5 sm:pt-6"
+      style="--d: 420ms"
+    >
+      <div
+        class="marquee-wrap relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]"
+      >
+        <div class="marquee-track items-center gap-6">
+          <ul
+            aria-label="Áreas de especialidad"
+            class="flex shrink-0 items-center gap-6 text-xs font-medium text-white/80"
+          >
+            {
+              hero.capabilities.map((cap, idx) => (
+                <li class="inline-flex shrink-0 items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    class:list={['size-1.5 rounded-full', idx % 2 === 0 ? 'bg-accent' : 'bg-sky']}
+                  />
+                  <span>{cap}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <ul
+            aria-hidden="true"
+            class="flex shrink-0 items-center gap-6 text-xs font-medium text-white/80"
+          >
+            {
+              hero.capabilities.map((cap, idx) => (
+                <li class="inline-flex shrink-0 items-center gap-3">
+                  <span
+                    class:list={['size-1.5 rounded-full', idx % 2 === 0 ? 'bg-accent' : 'bg-sky']}
+                  />
+                  <span>{cap}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <a
+        href="#nosotros"
+        aria-label="Explorar la sección Nosotros"
+        class="hidden shrink-0 items-center gap-2.5 font-display text-[0.7rem] font-semibold tracking-[0.2em] text-white/75 uppercase transition-colors hover:text-white md:inline-flex"
+      >
+        <span>Explorar</span>
+        <span
+          aria-hidden="true"
+          class="flex h-6 w-4 items-start justify-center rounded-full border border-accent/70 p-1"
+        >
+          <span class="scroll-wheel-dot h-1.5 w-0.5 rounded-full bg-accent"></span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
